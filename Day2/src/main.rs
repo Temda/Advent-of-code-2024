@@ -1,5 +1,7 @@
+// Day 2: Red-Nosed Reports
+// solution
 fn main() {
-    
+
     let input = include_str!("../input.txt");
 
     let reports: Vec<Vec<i32>> = input
