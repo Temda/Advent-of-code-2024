@@ -1,3 +1,5 @@
+// Day 3: Mull It Over
+
 use regex::Regex;
 
 fn main() {
@@ -34,7 +36,7 @@ fn part2(input: &str) -> i32 {
                 "do()" => enabled = true,
                 "don't()" => enabled = false,
                 _ => {
-                    
+
                     if enabled {
                         let a: i32 = capture.get(1).unwrap().as_str().parse().expect("Invalid number");
                         let b: i32 = capture.get(2).unwrap().as_str().parse().expect("Invalid number");
