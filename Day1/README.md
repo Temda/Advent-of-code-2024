@@ -23,6 +23,37 @@ There's just one problem: by holding the two lists up side by side (your puzzle 
 Given the two lists:
 
 
+Pair up the smallest number in the left list with the smallest number in the right list, and so on. Measure the distance for each pair:
+
+- Pair `(1, 3)`: Distance = 2
+- Pair `(2, 3)`: Distance = 1
+- Pair `(3, 3)`: Distance = 0
+- Pair `(3, 4)`: Distance = 1
+- Pair `(3, 5)`: Distance = 2
+- Pair `(4, 9)`: Distance = 5
+
+**Total Distance**: `2 + 1 + 0 + 1 + 2 + 5 = 11`
+
+Your task is to compute the total distance for your actual lists.  
+**Your puzzle answer was: 1666427**
+
+---
+
+## Part Two
+
+Your analysis only confirmed what everyone feared: the two lists of location IDs are indeed very different.
+
+Or are they?
+
+The Historians can't agree on which group made the mistakes or how to read most of the Chief's handwriting, but in the commotion, you notice an interesting detail: a lot of location IDs appear in both lists! Maybe the other numbers aren't location IDs at all but rather misinterpreted handwriting.
+
+This time, you'll need to figure out exactly how often each number from the left list appears in the right list. Calculate a **total similarity score** by adding up each number in the left list after multiplying it by the number of times it appears in the right list.
+
+### Example
+
+Given the same lists:
+
+
 Process each number from the left list:
 
 - `3`: Appears 3 times in the right list. Similarity score increases by `3 * 3 = 9`.
