@@ -1,3 +1,6 @@
+// Day 1: Historian Hysteria
+// solution
+
 use std::collections::HashMap;
 
 fn main() {
