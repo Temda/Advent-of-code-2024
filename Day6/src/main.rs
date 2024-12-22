@@ -89,6 +89,7 @@ fn simulate(map: &[Vec<char>]) -> SimulationResult {
     SimulationResult {
         visited_positions,
         is_looping: false,
+        
     }
 }
 
