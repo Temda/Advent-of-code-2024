@@ -31,7 +31,7 @@ pub fn part_1(input: &str) -> miette::Result<String> {
                         return None;
                     }
                 }
-                // Update the iteration
+                
                 before_pages = &original_update[0..(before_pages.len() + 1)];
 
                 if let Some(page) = update.get(0) {
@@ -58,31 +58,56 @@ pub fn part_1(input: &str) -> miette::Result<String> {
 #[tracing::instrument]
 pub fn part_2(input: &str) -> miette::Result<String> {
     let (_input, (rules, updates)) = parse(input)
-        .map_err(|e| miette!("parse failed: {}", e))?;
+    .map_err(|e| miette!("parse failed {}", e))?;
 
-    let sorted_results: Vec<_> = updates
+    let violating_indices: Vec<usize> = updates
         .iter()
-        .map(|update| {
-            let mut sorted_update = update.clone();
-            sorted_update.sort_by(|a, b| {
-                if rules
-                    .get(a)
-                    .is_some_and(|pages| pages.contains(b))
-                {
+        .enumerate()
+        .filter_map(|(index, original_update)| {
+            let mut current_item = original_update[0];
+            let mut update = &original_update[1..];
+            let mut before_pages = &original_update[0..0];
+
+            while before_pages.len() != original_update.len() {
+                if let Some(pages_that_must_come_after) = rules.get(&current_item) {
+                    if !pages_that_must_come_after
+                        .iter()
+                        .all(|page| !before_pages.contains(page))
+                    {
+                        return Some(index);
+                    }
+                }
+                
+                before_pages = &original_update[0..(before_pages.len() + 1)];
+                if let Some(page) = update.get(0) {
+                    current_item = *page;
+                    update = &update[1..];
+                }
+            }
+            None
+        })
+        .collect();
+
+    let sorted_results: Vec<Vec<u32>> = violating_indices
+        .iter()
+        .map(|&index| {
+            let mut update = updates[index].clone();
+            update.sort_by(|a, b| {
+                if rules.get(a).is_some_and(|pages| pages.contains(b)) {
                     Ordering::Less
                 } else {
                     Ordering::Greater
                 }
             });
-            sorted_update
+            update
         })
         .collect();
 
     let result: u32 = sorted_results
         .iter()
-        .map(|result| {
-            let middle = result.len() / 2;
-            result[middle]
+        .map(|sorted_update| {
+            let middle = sorted_update.len() / 2;
+            sorted_update[middle]
         })
         .sum();
 
@@ -144,33 +169,33 @@ fn main() -> Result<()> {
 //     #[test]
 //     fn test_part_1() -> miette::Result<()> {
 //         let input = "47|53
-// 97|13
-// 97|61
-// 97|47
-// 75|29
-// 61|13
-// 75|53
-// 29|13
-// 97|29
-// 53|29
-// 61|53
-// 97|53
-// 61|29
-// 47|13
-// 75|47
-// 97|75
-// 47|61
-// 75|61
-// 47|29
-// 75|13
-// 53|13
+//         97|13
+//         97|61
+//         97|47
+//         75|29
+//         61|13
+//         75|53
+//         29|13
+//         97|29
+//         53|29
+//         61|53
+//         97|53
+//         61|29
+//         47|13
+//         75|47
+//         97|75
+//         47|61
+//         75|61
+//         47|29
+//         75|13
+//         53|13
 
-// 75,47,61,53,29
-// 97,61,53,29,13
-// 75,29,13
-// 75,97,47,61,53
-// 61,13,29
-// 97,13,75,29,47";
+//         75,47,61,53,29
+//         97,61,53,29,13
+//         75,29,13
+//         75,97,47,61,53
+//         61,13,29
+//         97,13,75,29,47";
 //         assert_eq!("143", part_1(input)?);
 //         Ok(())
 //     }
@@ -178,33 +203,33 @@ fn main() -> Result<()> {
 //     #[test]
 //     fn test_part_2() -> miette::Result<()> {
 //         let input = "47|53
-// 97|13
-// 97|61
-// 97|47
-// 75|29
-// 61|13
-// 75|53
-// 29|13
-// 97|29
-// 53|29
-// 61|53
-// 97|53
-// 61|29
-// 47|13
-// 75|47
-// 97|75
-// 47|61
-// 75|61
-// 47|29
-// 75|13
-// 53|13
+//             97|13
+//             97|61
+//             97|47
+//             75|29
+//             61|13
+//             75|53
+//             29|13
+//             97|29
+//             53|29
+//             61|53
+//             97|53
+//             61|29
+//             47|13
+//             75|47
+//             97|75
+//             47|61
+//             75|61
+//             47|29
+//             75|13
+//             53|13
 
-// 75,47,61,53,29
-// 97,61,53,29,13
-// 75,29,13
-// 75,97,47,61,53
-// 61,13,29
-// 97,13,75,29,47";
+//             75,47,61,53,29
+//             97,61,53,29,13
+//             75,29,13
+//             75,97,47,61,53
+//             61,13,29
+//             97,13,75,29,47";
 //         assert_eq!("123", part_2(input)?);
 //         Ok(())
 //     }
