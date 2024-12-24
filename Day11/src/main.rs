@@ -98,6 +98,7 @@ mod tests {
 
     #[test]
     fn test_part_two() {
+        
         let input = vec![1234, 5678, 0];
         part_two(&input);
     }
